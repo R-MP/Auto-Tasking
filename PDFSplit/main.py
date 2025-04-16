@@ -17,19 +17,22 @@ else:
     for arquivo in arquivos_pdf:
         # Obtém o nome base do arquivo (sem extensão)
         nome_pai = os.path.splitext(os.path.basename(arquivo))[0]
-        print(f"Processando o arquivo: {arquivo}")
+        # Cria uma subpasta na pasta output com o nome do arquivo
+        pasta_destino = os.path.join(pasta_output, nome_pai)
+        os.makedirs(pasta_destino, exist_ok=True)
+        print(f"Processando o arquivo: {arquivo} em pasta: {pasta_destino}")
 
         # Abre o PDF para leitura
         leitor = PdfReader(arquivo)
         total_paginas = len(leitor.pages)
         
-        # Para cada página, cria um novo PDF
+        # Para cada página, cria um novo PDF na subpasta
         for i, pagina in enumerate(leitor.pages, start=1):
             escritor = PdfWriter()
             escritor.add_page(pagina)
             
             # Define o nome do arquivo de saída, ex: "3b - 1.pdf", "3b - 2.pdf", ...
-            nome_saida = os.path.join(pasta_output, f"{nome_pai} - {i}.pdf")
+            nome_saida = os.path.join(pasta_destino, f"{nome_pai} - {i}.pdf")
             with open(nome_saida, "wb") as f:
                 escritor.write(f)
             print(f"Gerado: {nome_saida}")
